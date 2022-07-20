@@ -48,7 +48,7 @@ const Login = () => {
 			setAuth({ username, password, accessToken })
 			setUsername('')
 			setPassword('')
-			navigate(from, { replace: true })
+			navigate('/menu', { replace: true })
 		} catch (err) {
 			if (!err?.response) {
 				setErrMsg('No Server Response')
@@ -96,10 +96,10 @@ const Login = () => {
 				<button>Sign In</button>
 			</form>
 			<p>
-				Need an Account?
+				back to home
 				<br />
 				<span className='line'>
-					<Link to='/register'>Sign Up</Link>
+					<Link to='/'>Home</Link>
 				</span>
 			</p>
 		</section>

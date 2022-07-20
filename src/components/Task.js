@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from '../api/axios'
-import RenderAntree from './layout/RenderAntree'
-// import useAuth from '../hooks/useAuth'
+import TaskModal from './layout/TaskModal'
+import RenderTask from './layout/RenderTask'
 
 const TASK_URL = '/tasks'
 
-const LandingPage = () => {
+const Task = () => {
 	const [tasks, setTasks] = useState([])
 	const [search, setSearch] = useState('')
 	const [page, setPage] = useState(1)
 	const [next, setNext] = useState({})
-	// const { auth } = useAuth()
-
+	const [isOpen, setIsOpen] = useState(false)
 	const handleSearch = (e) => setSearch(e.target.value)
 
 	useEffect(() => {
@@ -26,6 +25,7 @@ const LandingPage = () => {
 
 		fetchData()
 	}, [page, search])
+
 	return (
 		<section>
 			<input
@@ -34,8 +34,9 @@ const LandingPage = () => {
 				value={search}
 				onChange={handleSearch}
 			/>
-
-			<RenderAntree tasks={tasks} />
+			<button onClick={() => setIsOpen(true)}>add</button>
+			{isOpen && <TaskModal setIsOpen={setIsOpen} />}
+			<RenderTask tasks={tasks} />
 			<button
 				className='prev-btn'
 				type='button'
@@ -47,16 +48,16 @@ const LandingPage = () => {
 			<button
 				className='next-btn'
 				type='button'
-				disabled={!next}
 				onClick={() => setPage(page + 1)}
+				disabled={!next}
 			>
 				next
 			</button>
 			<span className='btm-link'>
-				<Link to='/login'> Go To Login</Link>
+				<Link to='/Menu'>Main Menu</Link>
 			</span>
 		</section>
 	)
 }
 
-export default LandingPage
+export default Task
