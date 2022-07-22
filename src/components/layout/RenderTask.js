@@ -1,23 +1,45 @@
-const RenderTask = ({ tasks }) => {
-	const handleUpdate = async (id) => {
-		console.log(id)
+import axios from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
+
+const RenderTask = ({ tasks, fetchData, setData, setIsUpdate }) => {
+	const { auth } = useAuth()
+	const handleUpdate = (id, task, cond, user) => {
+		setData({ id, task, cond, user })
+		setIsUpdate(true)
 	}
+
 	const handleDelete = async (id) => {
-		console.log(id)
+		try {
+			await axios.delete(`/tasks/${id}`, {
+				headers: {
+					Authorization: `Bearer ${auth.accessToken}`,
+				},
+				withCredentials: true,
+			})
+		} catch (error) {
+			console.error(error)
+		}
+
+		fetchData()
 	}
 	return (
 		<div className='card'>
-			{tasks.map((task) => (
-				<article key={task._id}>
+			{tasks.map(({ _id, task, condition, assigned_to }) => (
+				<article key={_id}>
 					<div className='text-wrapper'>
-						<p>{task.task}</p>
-						<p>{task.condition}</p>
-						<p>{task.assigned_to.username}</p>
+						<p>{task}</p>
+						<p>{condition}</p>
+						<p>{assigned_to.username}</p>
 					</div>
-					<button className='card-btn' onClick={() => handleUpdate(task._id)}>
+					<button
+						className='card-btn'
+						onClick={() =>
+							handleUpdate(_id, task, condition, assigned_to.username)
+						}
+					>
 						update
 					</button>
-					<button className='card-btn' onClick={() => handleDelete(task._id)}>
+					<button className='card-btn' onClick={() => handleDelete(_id)}>
 						delete
 					</button>
 				</article>

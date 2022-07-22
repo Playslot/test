@@ -99,6 +99,7 @@ form {
 	position: fixed;
 	bottom: 10.5rem;
 	left: 12rem;
+	/* z-index: 10; */
 }
 
 .next-btn {

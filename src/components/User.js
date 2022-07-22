@@ -2,31 +2,36 @@ import { useState, useEffect } from 'react'
 import axios from '../api/axios'
 import RenderUser from './layout/RenderUser'
 import useAuth from '../hooks/useAuth'
+import UserModal from './layout/modals/UserModal'
+import UpdateUserModal from './layout/modals/UpdateUserModal'
 const USER_URL = '/users'
 
 const User = () => {
 	const [user, setUser] = useState([])
 	const [search, setSearch] = useState('')
-	const [page, setPage] = useState(1)
-	const [next, setNext] = useState({})
+	const [isOpen, setIsOpen] = useState(false)
+	const [isUpdate, setIsUpdate] = useState(false)
+	const [data, setData] = useState('')
 	const { auth } = useAuth()
 	const handleSearch = (e) => setSearch(e.target.value)
+	const fetchData = async () => {
+		const result = await axios(USER_URL + `?username=${search}`, {
+			headers: {
+				Authorization: `Bearer ${auth.accessToken}`,
+			},
+		})
+		setUser(result.data)
+	}
 
 	useEffect(() => {
-		async function fetchData() {
-			const result = await axios(
-				USER_URL + `?page=${page}&limit=6&username=${search}`,
-				// {
-				// 	headers: {
-				// 		Authorization: `Bearer ${auth.accessToken}`,
-				// 	},
-				// },
-			)
-			setUser(result.data.result)
-			setNext(result.data.next)
+		let isMounted = true
+		const controller = new AbortController()
+		isMounted && fetchData()
+		return () => {
+			isMounted = false
+			controller.abort()
 		}
-		fetchData()
-	}, [page, search])
+	}, [search])
 
 	return (
 		<section>
@@ -36,17 +41,15 @@ const User = () => {
 				value={search}
 				onChange={handleSearch}
 			/>
-			<RenderUser users={user} />
-			<button
-				type='button'
-				disabled={page === 1}
-				onClick={() => setPage(page - 1)}
-			>
-				prev
-			</button>
-			<button type='button' onClick={() => setPage(page + 1)} disabled={!next}>
-				next
-			</button>
+			<button onClick={() => setIsOpen(true)}>add</button>
+			{isOpen && <UserModal fetchData={fetchData} setIsOpen={setIsOpen} />}
+			{isUpdate && <UpdateUserModal data={data} setIsOpen={setIsUpdate} />}
+			<RenderUser
+				fetchData={fetchData}
+				users={user}
+				setData={setData}
+				setIsUpdate={setIsUpdate}
+			/>
 		</section>
 	)
 }

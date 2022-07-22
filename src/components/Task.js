@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from '../api/axios'
-import TaskModal from './layout/TaskModal'
+import TaskModal from './layout/modals/TaskModal'
 import RenderTask from './layout/RenderTask'
+import useAuth from '../hooks/useAuth'
+import UpdateTaskModal from './layout/modals/UpdateTaskModal'
 
 const TASK_URL = '/tasks'
 
@@ -12,20 +14,35 @@ const Task = () => {
 	const [page, setPage] = useState(1)
 	const [next, setNext] = useState({})
 	const [isOpen, setIsOpen] = useState(false)
-	const handleSearch = (e) => setSearch(e.target.value)
+	const [isUpdate, setIsUpdate] = useState(false)
+	const [data, setData] = useState({})
 
-	useEffect(() => {
-		async function fetchData() {
+	const handleSearch = (e) => setSearch(e.target.value)
+	const { auth } = useAuth()
+
+	const fetchData = async () => {
+		try {
+			// const result = await getTask(page, search)
 			const result = await axios(
 				TASK_URL + `?page=${page}&limit=6&task=${search}`,
 			)
+			// if (isMounted) {
 			setTasks(result.data.results)
 			setNext(result.data.next)
+			// }
+		} catch (error) {
+			console.error(error)
 		}
-
-		fetchData()
+	}
+	useEffect(() => {
+		let isMounted = true
+		const controller = new AbortController()
+		isMounted && fetchData()
+		return () => {
+			isMounted = false
+			controller.abort()
+		}
 	}, [page, search])
-
 	return (
 		<section>
 			<input
@@ -35,8 +52,20 @@ const Task = () => {
 				onChange={handleSearch}
 			/>
 			<button onClick={() => setIsOpen(true)}>add</button>
-			{isOpen && <TaskModal setIsOpen={setIsOpen} />}
-			<RenderTask tasks={tasks} />
+			{isOpen && <TaskModal fetchData={fetchData} setIsOpen={setIsOpen} />}
+			{isUpdate && (
+				<UpdateTaskModal
+					data={data}
+					setIsOpen={setIsUpdate}
+					fetchData={fetchData}
+				/>
+			)}
+			<RenderTask
+				setIsUpdate={setIsUpdate}
+				setData={setData}
+				fetchData={fetchData}
+				tasks={tasks}
+			/>
 			<button
 				className='prev-btn'
 				type='button'

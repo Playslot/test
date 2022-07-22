@@ -1,12 +1,37 @@
-import React from 'react'
-import './style/modal.css'
+import React, { useState } from 'react'
+import axios from '../../../api/axios'
+import useAuth from '../../../hooks/useAuth'
+import '../style/modal.css'
 
-const UserModal = ({ setIsOpen }) => {
-	const handleSubmit = (e) => {
+const UserModal = ({ setIsOpen, fetchData }) => {
+	const [user, setUser] = useState('')
+	const [pwd, setPwd] = useState('')
+	const { auth } = useAuth()
+	const handleSubmit = async (e) => {
 		e.preventDefault()
-		console.log('submit')
+
+		try {
+			await axios.post(
+				'/users/create',
+				JSON.stringify({ username: user, password: pwd }),
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+					withCredentials: true,
+				},
+			)
+		} catch (error) {
+			console.error(error)
+		}
+
+		fetchData()
 		setIsOpen(false)
 	}
+
+	const handleUser = (e) => setUser(e.target.value)
+	const handlePwd = (e) => setPwd(e.target.value)
 
 	return (
 		<>
@@ -26,12 +51,17 @@ const UserModal = ({ setIsOpen }) => {
 								id='topLabel'
 								className='modalInput'
 								placeholder='username...'
+								value={user}
+								onChange={handleUser}
 							/>
 							<label htmlFor='middleLabel'>Password</label>
 							<input
 								id='middleLable'
+								type='password'
 								className='modalInput'
 								placeholder='password...'
+								value={pwd}
+								onChange={handlePwd}
 							/>
 						</form>
 					</div>

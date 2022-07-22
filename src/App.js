@@ -13,11 +13,11 @@ function App() {
 			<Route path='/' element={<LandingPage />} exact />
 			<Route path='/login' element={<Login />} />
 			{/* {auth routes} */}
-			{/* <Route element={<RequireAuth />}> */}
-			<Route path='/menu' element={<Menu />} />
-			<Route path='/user' element={<User />} />
-			<Route path='/task' element={<Task />} />
-			{/* </Route> */}
+			<Route element={<RequireAuth />}>
+				<Route path='/menu' element={<Menu />} />
+				<Route path='/user' element={<User />} />
+				<Route path='/task' element={<Task />} />
+			</Route>
 		</Routes>
 	)
 }

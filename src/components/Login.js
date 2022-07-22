@@ -4,9 +4,7 @@ import useAuth from '../hooks/useAuth'
 
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
-import axios from '../api/axios'
-
-const LOGIN_URL = '/auth/login'
+import { login } from '../api/auth'
 
 const Login = () => {
 	const { setAuth } = useAuth()
@@ -34,15 +32,8 @@ const Login = () => {
 		e.preventDefault()
 
 		try {
-			const response = await axios.post(
-				LOGIN_URL,
-				JSON.stringify({ username, password }),
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true,
-				},
-			)
-			console.log(JSON.stringify(response?.data))
+			const response = await login({ username, password }) //ini tadi kosong errornya kemana" biasa js
+			// console.log(JSON.stringify(response?.data))
 			//console.log(JSON.stringify(response));
 			const accessToken = response?.data?.accessToken
 			setAuth({ username, password, accessToken })

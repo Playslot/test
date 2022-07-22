@@ -14,6 +14,8 @@ const LandingPage = () => {
 	// const { auth } = useAuth()
 
 	const handleSearch = (e) => setSearch(e.target.value)
+	// const { data, error, loaded } = useAxios(TASK_URL, 'get')
+	// setTasks(data)
 
 	useEffect(() => {
 		async function fetchData() {
@@ -23,7 +25,6 @@ const LandingPage = () => {
 			setTasks(result.data.results)
 			setNext(result.data.next)
 		}
-
 		fetchData()
 	}, [page, search])
 	return (
