@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import axios from '../api/axios'
 import TaskModal from './layout/modals/TaskModal'
 import RenderTask from './layout/RenderTask'
-import useAuth from '../hooks/useAuth'
 import UpdateTaskModal from './layout/modals/UpdateTaskModal'
 
 const TASK_URL = '/tasks'
@@ -17,19 +16,18 @@ const Task = () => {
 	const [isUpdate, setIsUpdate] = useState(false)
 	const [data, setData] = useState({})
 
-	const handleSearch = (e) => setSearch(e.target.value)
-	const { auth } = useAuth()
+	const handleSearch = (e) => {
+		setPage(1)
+		setSearch(e.target.value)
+	}
 
 	const fetchData = async () => {
 		try {
-			// const result = await getTask(page, search)
 			const result = await axios(
 				TASK_URL + `?page=${page}&limit=6&task=${search}`,
 			)
-			// if (isMounted) {
 			setTasks(result.data.results)
 			setNext(result.data.next)
-			// }
 		} catch (error) {
 			console.error(error)
 		}

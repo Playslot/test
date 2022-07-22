@@ -13,7 +13,10 @@ const LandingPage = () => {
 	const [next, setNext] = useState({})
 	// const { auth } = useAuth()
 
-	const handleSearch = (e) => setSearch(e.target.value)
+	const handleSearch = (e) => {
+		setPage(1)
+		setSearch(e.target.value)
+	}
 	// const { data, error, loaded } = useAxios(TASK_URL, 'get')
 	// setTasks(data)
 
