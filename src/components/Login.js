@@ -39,7 +39,7 @@ const Login = () => {
 			setAuth({ username, password, accessToken })
 			setUsername('')
 			setPassword('')
-			navigate('/menu', { replace: true })
+			navigate('/task', { replace: true })
 		} catch (err) {
 			if (!err?.response) {
 				setErrMsg('No Server Response')

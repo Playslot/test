@@ -1,0 +1,11 @@
+.menubar {
+	display: flex;
+	flex-direction: row;
+	background-color: aquamarine;
+	align-items: center;
+}
+
+.menu-links {
+	margin-left: 2rem;
+	color: black;
+}

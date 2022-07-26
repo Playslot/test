@@ -80,9 +80,6 @@ const Task = () => {
 			>
 				next
 			</button>
-			<span className='btm-link'>
-				<Link to='/Menu'>Main Menu</Link>
-			</span>
 		</section>
 	)
 }
